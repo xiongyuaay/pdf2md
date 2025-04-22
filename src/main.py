@@ -1,6 +1,6 @@
 import os
 import argparse
-from pdf_converter import PDFConverter
+from pdf_converter_image_page import PDFConverter
 from knowledge_extractor import KnowledgeExtractor
 
 def main():

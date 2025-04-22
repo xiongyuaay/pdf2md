@@ -32,7 +32,7 @@ class KnowledgeExtractor:
             if not openai.api_key:
                 print("警告: 未设置OpenAI API密钥，请设置环境变量OPENAI_API_KEY或通过参数传入")
             
-    def extract_knowledge_points(self, text, max_tokens=4000):
+    def extract_knowledge_points(self, text, max_tokens=1800):
         """
         从文本中提取知识点
         
@@ -114,30 +114,43 @@ class KnowledgeExtractor:
         Returns:
             str: 提取的知识点
         """
-        text_chunks = self._further_split(text, max_tokens=1800)
-        if len(text_chunks) > 1:
-            print(f"文本过长，已拆分为{len(text_chunks)}个更小的块进行处理")
-            results = []
-            for i, chunk in enumerate(text_chunks):
-                print(f"处理小块 {i+1}/{len(text_chunks)}")
-                chunk_result = self._process_local_model_chunk(chunk)
-                if chunk_result:
-                    results.append(chunk_result)
-            return "\n\n".join(results)
-        else:
-            return self._process_local_model_chunk(text)
+        # text_chunks = self._further_split(text, max_tokens=1800)
+        # if len(text_chunks) > 1:
+        #     print(f"文本过长，已拆分为{len(text_chunks)}个更小的块进行处理")
+        #     results = []
+        #     for i, chunk in enumerate(text_chunks):
+        #         print(f"处理小块 {i+1}/{len(text_chunks)}")
+        #         chunk_result = self._process_local_model_chunk(chunk)
+        #         if chunk_result:
+        #             results.append(chunk_result)
+        #     return "\n\n".join(results)
+        # else:
+        #     return self._process_local_model_chunk(text)
+        
+        try:
+            result = self._process_local_model_chunk(text)
+            return result if result else ""
+        except Exception as e:
+            print(f"调用本地模型时出错: {e}")
+            return ""
     
     def _process_local_model_chunk(self, text):
         """处理单个文本块的具体逻辑"""
-        system_prompt = "你是一个专业的教育内容分析助手。请从提供的教材文本中提取关键知识点，并按以下格式组织：\n"\
-                        "1. 使用Markdown格式\n"\
-                        "2. 适当使用标题层级（#、##、###）组织内容\n"\
-                        "3. 重点概念使用**加粗**标记\n"\
-                        "4. 对于公式或特殊符号，使用LaTeX格式\n"\
-                        "5. 提取的知识点要保持原文的准确性\n"\
-                        "6. 如果有明显的章节结构，请保留"
-        
-        user_prompt = f"请从以下教材文本中提取关键知识点：\n\n{text}"
+        system_prompt = (
+            "你是一个专业的教育内容分析助手。"
+            "请从提供的教材文本中提取关键知识点，并严格遵循以下要求：\n"
+            "1. 使用 Markdown 格式组织内容；\n"
+            "2. 根据原文结构，使用合适的标题层级（#、##、###）；\n"
+            "3. 重点概念使用 **加粗** 标记；\n"
+            "4. 所有公式或特殊符号使用 LaTeX 格式；\n"
+            "5. 保持原文准确性，不随意添加解释或改写内容；\n"
+            "6. 保留所有原始文本中的图片引用（如 ![图片说明](图片链接)）；\n"
+            "7. 不要输出额外的总结、说明、免责声明、或与任务无关的文字。\n"
+            "你的任务是仅输出格式化后的知识点内容，保持简洁和一致性。"
+        )
+
+        user_prompt = f"以下是部分教材内容，请仅按要求提取关键知识点，不要添加其他内容：\n\n{text}"
+
         
         try:
             payload = {
@@ -174,7 +187,7 @@ class KnowledgeExtractor:
             print(f"调用本地模型API时出错: {e}")
             return ""
 
-    def _further_split_if(self, text, max_tokens=1800):
+    def _further_split(self, text, max_tokens=1800):
         """
         进一步将可能超出模型最大上下文长度的文本分割成更小的块
         

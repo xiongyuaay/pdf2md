@@ -10,34 +10,18 @@ import json
 import time
 from typing import List, Dict, Any, Optional, Union
 
-try:
-    import torch
-    from transformers import AutoTokenizer, AutoModelForCausalLM
-    from transformers import TextIteratorStreamer
-    from threading import Thread
-    from fastapi import FastAPI, HTTPException, BackgroundTasks
-    from fastapi.middleware.cors import CORSMiddleware
-    from fastapi.responses import StreamingResponse, JSONResponse
-    import uvicorn
-    from pydantic import BaseModel, Field
-    print("DEBUG: 导入后")
-except ImportError:
-    import subprocess
-    subprocess.check_call([sys.executable, "-m", "pip", "install", 
-                           "torch", "transformers", "fastapi", "uvicorn",
-                           "pydantic", "sentencepiece", "accelerate"])
-    import torch
-    from transformers import AutoTokenizer, AutoModelForCausalLM
-    from transformers import TextIteratorStreamer
-    from threading import Thread
-    from fastapi import FastAPI, HTTPException, BackgroundTasks
-    from fastapi.middleware.cors import CORSMiddleware
-    from fastapi.responses import StreamingResponse, JSONResponse
-    import uvicorn
-    from pydantic import BaseModel, Field
-    print("DEBUG: 导入后")
 
+import torch
+from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import TextIteratorStreamer
+from threading import Thread
+from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse, JSONResponse
+import uvicorn
+from pydantic import BaseModel, Field
 print("DEBUG: 导入后")
+
 # 设置日志
 logging.basicConfig(
     level=logging.INFO,
@@ -466,7 +450,7 @@ def main():
     parser = argparse.ArgumentParser(description="本地大模型API服务器")
     parser.add_argument("--model_name", "-m", type=str, default="Qwen/Qwen-1_8B-Chat",
                         help="模型名称或路径，默认使用较小的Qwen-1.8B-Chat")
-    parser.add_argument("--device", "-d", type=str, default="cuda",
+    parser.add_argument("--device", "-d", type=str, default="auto",
                         choices=["auto", "cpu", "cuda"],
                         help="运行设备，可选 'cpu', 'cuda', 'auto'")
     parser.add_argument("--quantization", "-q", type=str, default=None,
