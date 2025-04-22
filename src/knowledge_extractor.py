@@ -4,32 +4,35 @@ from tqdm import tqdm
 import openai
 import requests
 from dotenv import load_dotenv
+from openai import OpenAI
+import httpx
 
 class KnowledgeExtractor:
-    def __init__(self, api_key=None, use_local_model=False, local_model_url=None):
-        """
-        初始化知识点提取器
-        
-        Args:
-            api_key (str): OpenAI API密钥
-            use_local_model (bool): 是否使用本地模型
-            local_model_url (str): 本地模型API地址
-        """
+    def __init__(self, api_key=None, use_local_model=False, local_model_url=None, base_url=None):
         load_dotenv()
-        
+
         self.use_local_model = use_local_model
         self.local_model_url = local_model_url or os.getenv("LOCAL_MODEL_URL")
-        
-        if self.use_local_model:
-            if not self.local_model_url:
-                print("警告: 未设置本地模型URL，请设置环境变量LOCAL_MODEL_URL或通过参数传入")
-        else:
+        self.client = None
+        transport = httpx.HTTPTransport(proxy="http://127.0.0.1:7890")
+
+        http_client = httpx.Client(transport=transport)
+
+        if not self.use_local_model:
+            api_key = api_key or os.getenv("OPENAI_API_KEY")
+            base_url = base_url or os.getenv("OPENAI_BASE_URL") 
+
+            # https://ai-yyds.com
+            # https://api.openai.com/v1
+            # https://ai-yyds.com/v1
+            # https://api.tata-api.com/v1
             if api_key:
-                openai.api_key = api_key
+                self.client = OpenAI(
+                    api_key=api_key,
+                    base_url=base_url if base_url else "https://api.tata-api.com/v1",
+                    http_client=http_client
+                )
             else:
-                openai.api_key = os.getenv("OPENAI_API_KEY")
-                
-            if not openai.api_key:
                 print("警告: 未设置OpenAI API密钥，请设置环境变量OPENAI_API_KEY或通过参数传入")
             
     def extract_knowledge_points(self, text, max_tokens=1800):
@@ -52,8 +55,8 @@ class KnowledgeExtractor:
                 print("未设置本地模型URL，无法提取知识点")
                 return []
         else:
-            if not openai.api_key:
-                print("未设置OpenAI API密钥，无法提取知识点")
+            if not self.client:
+                print("未成功创建client")
                 return []
             
         text_chunks = self._split_text(text, max_tokens)
@@ -78,31 +81,30 @@ class KnowledgeExtractor:
     def _call_openai_api(self, text):
         """
         调用OpenAI API提取知识点
-        
-        Args:
-            text (str): 输入文本
-            
-        Returns:
-            str: 提取的知识点
         """
-        response = openai.ChatCompletion.create(
+        if not self.client:
+            raise RuntimeError("OpenAI 客户端未初始化")
+        
+        response = self.client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "你是一个专业的教育内容分析助手。请从提供的教材文本中提取关键知识点，并按以下格式组织：\n"
-                                             "1. 使用Markdown格式\n"
-                                             "2. 适当使用标题层级（#、##、###）组织内容\n"
-                                             "3. 重点概念使用**加粗**标记\n"
-                                             "4. 对于公式或特殊符号，使用LaTeX格式\n"
-                                             "5. 提取的知识点要保持原文的准确性\n"
-                                             "6. 如果有明显的章节结构，请保留"
+                {"role": "system", "content": "你是一个专业的教育内容分析助手。"
+                                              "请从提供的教材文本中提取关键知识点，并严格遵循以下要求：\n"
+                                              "1. 使用 Markdown 格式组织内容；\n"
+                                              "2. 根据原文结构，使用合适的标题层级（#、##、###）；\n"
+                                              "3. 重点概念使用 **加粗** 标记；\n"
+                                              "4. 所有公式或特殊符号使用 LaTeX 格式；\n"
+                                              "5. 保持原文准确性，不随意添加解释或改写内容；\n"
+                                              "6. 保留所有原始文本中的图片引用（如 ![图片说明](图片链接)）；\n"
+                                              "7. 不要输出额外的总结、说明、免责声明、或与任务无关的文字。\n"
                 },
-                {"role": "user", "content": f"请从以下教材文本中提取关键知识点：\n\n{text}"}
+                {"role": "user", "content": f"以下是部分教材内容，请仅按要求提取关键知识点，不要添加其他内容：\n\n{text}"}
             ],
             temperature=0.0,
             max_tokens=4000
         )
-        
-        return response.choices[0].message['content'].strip()
+
+        return response.choices[0].message.content.strip()
     
     def _call_local_model(self, text):
         """
