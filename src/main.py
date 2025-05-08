@@ -1,7 +1,7 @@
 import os
 import argparse
-from pdf_converter_image_page import PDFConverter
-from knowledge_extractor import KnowledgeExtractor
+from pdf_converter_image import PDFConverter
+from Knowledge_extractor import KnowledgeExtractor
 
 def main():
     parser = argparse.ArgumentParser(description='PDF教材转Markdown并提取知识点工具')
@@ -9,10 +9,8 @@ def main():
     parser.add_argument('--output', '-o', type=str, help='输出目录路径')
     parser.add_argument('--api_key', '-k', type=str, help='OpenAI API密钥')
     parser.add_argument('--extract', '-e', action='store_true', help='是否提取知识点')
-    parser.add_argument('--method', '-m', type=str, default='pdfminer', 
-                        choices=['pdfminer', 'pypdf2'], help='PDF文本提取方法')
     parser.add_argument('--local_model', '-l', action='store_true', help='是否使用本地部署的大模型')
-    parser.add_argument('--model_url', '-u', type=str, help='本地模型API地址')
+    parser.add_argument('--model_url', '-u', type=str, help='模型API地址')
     
     args = parser.parse_args()
     
