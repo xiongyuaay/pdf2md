@@ -1,0 +1,861 @@
+{
+  "knowledge_points": [
+    {
+      "id": "kp1",
+      "title": "矩阵的秩",
+      "content": "矩阵的秩的两种解释：1.经过矩阵变换后的维度；2.列空间的维度。矩阵A的列秩是A的线性独立的纵列的极大数目，行秩是A的线性无关的横行的极大数目。满秩矩阵的每一行都有一个主元，线性方程组一定有解；不满秩矩阵至少有一行不存在主元，可能导致无穷多解或无解。矩阵A的不等于零的子式的最高阶数称为矩阵A的秩。",
+      "type": "concept",
+      "importance": 0.9,
+      "related_points": []
+    },
+    {
+      "id": "kp2",
+      "title": "线性相关与线性无关",
+      "content": "线性相关：一组向量中至少有一个向量可以被其余向量线性表示。线性无关（线性独立）：不存在一组不全为零的常数使得这些向量与常数的乘积之和为零。",
+      "type": "concept",
+      "importance": 0.9,
+      "related_points": []
+    },
+    {
+      "id": "kp3",
+      "title": "向量空间与线性空间",
+      "content": "线性空间是具有加法和数乘运算的集合，满足交换律、结合律、零元、逆元等性质。向量空间特指由向量构成的线性空间。n维向量空间是所有n维向量构成的集合。线性空间中的元素称为向量。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp4",
+      "title": "向量的基",
+      "content": "线性空间V的基是V中一组线性无关的向量，且V中任意向量都可以由这组向量线性表示。基的向量个数称为空间的维数。",
+      "type": "concept",
+      "importance": 0.7,
+      "related_points": []
+    },
+    {
+      "id": "kp5",
+      "title": "线性空间定义",
+      "content": "线性空间（向量空间）是具有加法和数乘运算的集合，满足交换律、结合律、零元、逆元等性质。集合中的元素称为向量。",
+      "type": "concept",
+      "importance": 0.9,
+      "related_points": []
+    },
+    {
+      "id": "kp6",
+      "title": "向量的基",
+      "content": "在线性空间V中，若存在n个线性无关的向量，且V中任意向量都可由这n个向量线性表示，则这n个向量称为V的基。",
+      "type": "concept",
+      "importance": 0.9,
+      "related_points": [
+        "kp94"
+      ]
+    },
+    {
+      "id": "kp7",
+      "title": "向量正交与矩阵正交",
+      "content": "正交向量组中任意两个向量的点积为零。正交矩阵的列向量是单位向量且两两正交，其转置等于逆矩阵。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": [
+        "kp94"
+      ]
+    },
+    {
+      "id": "kp8",
+      "title": "高斯分布(正态分布)",
+      "content": "由大量独立微小随机因素叠加形成的随机变量服从正态分布，其概率密度函数关于均值对称，标准差决定曲线陡峭程度。",
+      "type": "concept",
+      "importance": 0.9,
+      "related_points": []
+    },
+    {
+      "id": "kp9",
+      "title": "相似矩阵",
+      "content": "若存在可逆矩阵P使P⁻¹AP=B，则称A与B相似。相似矩阵具有相同的特征值和行列式。",
+      "type": "concept",
+      "importance": 0.9,
+      "related_points": [
+        "kp94"
+      ]
+    },
+    {
+      "id": "kp10",
+      "title": "正定矩阵",
+      "content": "实对称矩阵S若对任意非零向量α都有αᵀSα>0，则S为正定矩阵。等价条件：所有特征值大于零，各阶顺序主子式大于零。",
+      "type": "concept",
+      "importance": 0.9,
+      "related_points": [
+        "kp93"
+      ]
+    },
+    {
+      "id": "kp11",
+      "title": "矩阵范数",
+      "content": "矩阵范数是满足非负性、齐次性、三角不等式和相容性的函数。矩阵一范数是最大列和，矩阵二范数是矩阵A转置与A相乘所得矩阵的最大特征值。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp12",
+      "title": "特征值与特征向量",
+      "content": "特征向量是矩阵作用后方向不变的向量，特征值是相应的伸缩比例。特征值可用于奇异值分解、主成分分析、谱分解和特征值分解。",
+      "type": "concept",
+      "importance": 0.95,
+      "related_points": []
+    },
+    {
+      "id": "kp13",
+      "title": "线性方程组解的存在条件",
+      "content": "线性方程组Ax=b有解的充要条件是系数矩阵A和增广矩阵B的秩相等。当有解时，通解依赖于m-rank(A)个独立参数；当m=rank(A)时具有唯一解。",
+      "type": "principle",
+      "importance": 0.9,
+      "related_points": []
+    },
+    {
+      "id": "kp14",
+      "title": "齐次线性方程组的解",
+      "content": "齐次线性方程组必有零解，有非零解的充要条件是系数矩阵的秩小于未知数个数。通解由基础解系构成，依赖于m-rank(A)个独立参数。",
+      "type": "principle",
+      "importance": 0.85,
+      "related_points": []
+    },
+    {
+      "id": "kp15",
+      "title": "非齐次线性方程组的解",
+      "content": "非齐次线性方程组的通解由相伴齐次方程组的通解和一个特解组成。",
+      "type": "principle",
+      "importance": 0.85,
+      "related_points": []
+    },
+    {
+      "id": "kp16",
+      "title": "张量的定义",
+      "content": "张量是标量、向量和矩阵的推广：标量是0阶张量，向量是1阶张量，矩阵是2阶张量。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp17",
+      "title": "初等行变换",
+      "content": "三种基本变换：1) 交换两行；2) 某行乘以非零常数k；3) 某行的L倍加到另一行。用于将矩阵化为行最简形。",
+      "type": "method",
+      "importance": 0.75,
+      "related_points": []
+    },
+    {
+      "id": "kp18",
+      "title": "线性无关",
+      "content": "向量组线性无关当且仅当向量方程仅有零解。零向量总是线性相关的。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp19",
+      "title": "可逆矩阵性质",
+      "content": "可逆矩阵(非奇异矩阵)的行列式非零且逆矩阵唯一。不可逆矩阵称为奇异矩阵。",
+      "type": "fact",
+      "importance": 0.85,
+      "related_points": []
+    },
+    {
+      "id": "kp20",
+      "title": "克莱姆法则",
+      "content": "适用于n×n线性方程组的解法，要求：1) 方程数等于未知量数；2) 系数矩阵行列式非零。",
+      "type": "method",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp21",
+      "title": "随机变量与变量的区别",
+      "content": "随机变量是量化随机事件的函数，描述随机现象并通过概率统计分析，其取值有多个且每个取值都有概率。变量描述确定性现象，取值固定唯一且范围是整个定义域。",
+      "type": "concept",
+      "importance": 0.9,
+      "related_points": []
+    },
+    {
+      "id": "kp22",
+      "title": "随机变量与概率分布的联系",
+      "content": "随机变量的分布函数表述其统计规律性，通过分布函数可确定该随机变量落在某一区间的概率。",
+      "type": "principle",
+      "importance": 0.85,
+      "related_points": []
+    },
+    {
+      "id": "kp23",
+      "title": "联合概率与边缘概率",
+      "content": "联合概率基于两个随机变量及其相互作用的样本空间。边缘概率是多维随机变量样本空间中，固定若干随机变量取值得到的子空间概率。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp24",
+      "title": "常见离散概率分布及应用",
+      "content": "二项分布：n重伯努利试验，如产品合格率检测。两点分布：比赛胜率估计。泊松分布：单位时间/空间内事件数量频数分布，如顾客到达数、电路干扰次数。",
+      "type": "fact",
+      "importance": 0.85,
+      "related_points": []
+    },
+    {
+      "id": "kp25",
+      "title": "常见概率分布及应用",
+      "content": "离散分布包括二项分布（n重伯努利试验）、两点分布（伯努利试验）、泊松分布（单位时间/空间事件频数）、超几何分布（有限总体不放回抽样）和几何分布（首次成功试验次数）。连续分布包括均匀分布、正态分布（统计理论、误差分析）和指数分布（事件间隔时间建模）。",
+      "type": "fact",
+      "importance": 0.9,
+      "related_points": []
+    },
+    {
+      "id": "kp26",
+      "title": "切比雪夫大数定律",
+      "content": "当随机试验次数n充分大时，样本均值趋近于总体均值，表明平均结果具有稳定性。",
+      "type": "principle",
+      "importance": 0.85,
+      "related_points": [
+        "kp93",
+        "kp94"
+      ]
+    },
+    {
+      "id": "kp27",
+      "title": "辛钦大数定理",
+      "content": "独立同分布且具有均值u的n个随机变量，当n很大时其算术平均值依概率收敛于u，即样本均值稳定于数学期望。",
+      "type": "principle",
+      "importance": 0.85,
+      "related_points": [
+        "kp93",
+        "kp94"
+      ]
+    },
+    {
+      "id": "kp28",
+      "title": "伯努利大数定律",
+      "content": "当随机试验次数n充分大时，事件A的频率与概率的绝对偏差很小，可用频率近似概率。",
+      "type": "principle",
+      "importance": 0.85,
+      "related_points": [
+        "kp92",
+        "kp97"
+      ]
+    },
+    {
+      "id": "kp29",
+      "title": "中心极限定理",
+      "content": "独立同分布随机变量之和的标准化变量在n充分大时近似服从标准正态分布。推论：n个独立同分布随机变量的算术平均值近似服从N(u, σ²/n)。",
+      "type": "principle",
+      "importance": 0.95,
+      "related_points": []
+    },
+    {
+      "id": "kp30",
+      "title": "正态分布的可加性",
+      "content": "彼此独立的正态分布随机变量的和仍然服从正态分布。",
+      "type": "principle",
+      "importance": 0.9,
+      "related_points": []
+    },
+    {
+      "id": "kp31",
+      "title": "假设检验的基本思想",
+      "content": "基于小概率事件原理的统计反证法，通过样本数据判断差异是否由抽样误差引起。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": [
+        "kp92"
+      ]
+    },
+    {
+      "id": "kp32",
+      "title": "假设检验的步骤",
+      "content": "1. 建立原假设和备择假设 2. 选择适当的统计量 3. 根据显著性水平确定拒绝域 4. 做出统计决策。",
+      "type": "method",
+      "importance": 0.85,
+      "related_points": [
+        "kp97"
+      ]
+    },
+    {
+      "id": "kp33",
+      "title": "数学期望的定义",
+      "content": "随机变量各取值与其概率乘积的总和，反映随机变量的集中趋势。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp34",
+      "title": "方差的定义",
+      "content": "方差是随机变量与其数学期望的偏差平方的期望值，用于衡量随机变量在均值附近的离散程度。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": [
+        "kp94"
+      ]
+    },
+    {
+      "id": "kp35",
+      "title": "独立与不相关的关系",
+      "content": "独立性意味着不相关性，但反之不成立。不相关仅表示线性无关，可能存在非线性依赖关系。",
+      "type": "principle",
+      "importance": 0.7,
+      "related_points": []
+    },
+    {
+      "id": "kp36",
+      "title": "概率密度函数",
+      "content": "连续随机变量的概率密度函数是非负可积函数，其在区间上的积分等于该区间概率。它描述随机变量在点附近的概率密度而非概率本身。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp37",
+      "title": "全概率公式",
+      "content": "用于计算由多个互斥完备事件导致某结果的概率，等于各原因导致该结果的概率加权和。",
+      "type": "formula",
+      "importance": 0.9,
+      "related_points": [
+        "kp94"
+      ]
+    },
+    {
+      "id": "kp38",
+      "title": "贝叶斯公式",
+      "content": "在已知结果条件下，反推某原因发生的概率，需要先验概率和条件概率作为基础。",
+      "type": "formula",
+      "importance": 0.9,
+      "related_points": [
+        "kp93"
+      ]
+    },
+    {
+      "id": "kp39",
+      "title": "协方差与相关系数",
+      "content": "协方差衡量两个随机变量的线性关系：正值表示正相关，负值表示负相关，零表示线性无关。相关系数是标准化的协方差，取值范围[-1,1]，消除了量纲影响。零相关仅表示线性无关，可能存在非线性关系。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp40",
+      "title": "正态分布的可加性",
+      "content": "独立正态随机变量之和仍服从正态分布，其均值为各变量均值之和，方差为各变量方差之和。",
+      "type": "fact",
+      "importance": 0.9,
+      "related_points": []
+    },
+    {
+      "id": "kp41",
+      "title": "正态分布的乘积性质",
+      "content": "正态随机变量的乘积服从正态分布乘以常数的分布形式。",
+      "type": "fact",
+      "importance": 0.7,
+      "related_points": [
+        "kp97"
+      ]
+    },
+    {
+      "id": "kp42",
+      "title": "不均匀硬币的公平化方法",
+      "content": "通过连续抛掷两次不均匀硬币（概率p≠0.5），仅当出现正反或反正时分别作为成功/失败，其他情况重抛，可得到公平的1/2概率。",
+      "type": "method",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp43",
+      "title": "概率在机器学习中的重要性",
+      "content": "1. 数据驱动本质需要概率建模\n2. 评估指标具有概率形式\n3. 概率理论是算法设计的核心基础",
+      "type": "principle",
+      "importance": 0.85,
+      "related_points": []
+    },
+    {
+      "id": "kp44",
+      "title": "极大似然估计",
+      "content": "利用已知样本结果反推最可能导致这些结果的模型参数值的方法。",
+      "type": "method",
+      "importance": 0.95,
+      "related_points": [
+        "kp94"
+      ]
+    },
+    {
+      "id": "kp45",
+      "title": "参数估计评价标准",
+      "content": "无偏性：估计量期望等于真实参数；有效性：估计量方差小；一致性：样本增大时估计量收敛于真实参数。",
+      "type": "principle",
+      "importance": 0.9,
+      "related_points": []
+    },
+    {
+      "id": "kp46",
+      "title": "区间估计",
+      "content": "在一定置信度下包含参数θ的区间，区间长度与精度成反比。",
+      "type": "concept",
+      "importance": 0.85,
+      "related_points": [
+        "kp94"
+      ]
+    },
+    {
+      "id": "kp47",
+      "title": "独立与互不相容的关系",
+      "content": "独立事件P(AB)=P(A)P(B)>0与互不相容事件P(AB)=0不能同时成立。",
+      "type": "principle",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp48",
+      "title": "先验概率与后验概率",
+      "content": "先验概率是基于经验的初始概率（因）；后验概率是结果已知后修正的概率（果）。",
+      "type": "concept",
+      "importance": 0.9,
+      "related_points": []
+    },
+    {
+      "id": "kp49",
+      "title": "分布函数的充要条件",
+      "content": "1. F(x)是单调不减函数；2. 0≤F(x)≤1，且lim(x→-∞)F(x)=0，lim(x→+∞)F(x)=1；3. F(x)是右连续函数",
+      "type": "principle",
+      "importance": 0.85,
+      "related_points": []
+    },
+    {
+      "id": "kp50",
+      "title": "概率与统计的区别",
+      "content": "概率是已知模型和参数，推导数据的分布；统计是已知数据，推导模型和参数。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp51",
+      "title": "贝叶斯公式",
+      "content": "贝叶斯公式描述了先验概率和后验概率之间的关系，其中先验概率是在考虑新证据之前的概率，后验概率是在考虑新证据之后的概率。",
+      "type": "principle",
+      "importance": 0.9,
+      "related_points": []
+    },
+    {
+      "id": "kp52",
+      "title": "概率与似然的区别",
+      "content": "概率是已知模型和参数，预测数据的可能性；似然是已知数据，评估模型和参数的可能性。",
+      "type": "concept",
+      "importance": 0.7,
+      "related_points": [
+        "kp94"
+      ]
+    },
+    {
+      "id": "kp53",
+      "title": "离散型与连续型随机变量",
+      "content": "离散型随机变量取有限或可数无限个值，连续型随机变量取不可数无限个值，通常用概率密度函数描述。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp54",
+      "title": "泰勒展开",
+      "content": "泰勒展开是用多项式近似表达函数的方法，函数在某一点展开为泰勒多项式。",
+      "type": "method",
+      "importance": 0.9,
+      "related_points": []
+    },
+    {
+      "id": "kp55",
+      "title": "傅里叶变换",
+      "content": "傅里叶变换及其逆变换是一对互逆运算，用于将时域的非周期连续信号转换为频域的非周期连续信号。",
+      "type": "method",
+      "importance": 0.9,
+      "related_points": []
+    },
+    {
+      "id": "kp56",
+      "title": "傅里叶变换与傅里叶级数的区别",
+      "content": "傅里叶级数是函数的近似表达，通过三角函数系表示函数；傅里叶变换是对函数进行变换的工具，将时域信号转换为频域信号。",
+      "type": "concept",
+      "importance": 0.7,
+      "related_points": []
+    },
+    {
+      "id": "kp57",
+      "title": "函数零点与极值点的求法",
+      "content": "函数零点求法：1. 解析解：令函数值等于0，解方程；2. 数值方法：二分法、牛顿迭代法。极值点求法：1. 对函数求导，令导函数等于0，求零点；2. 判断零点两端导函数值的符号，若异号则为极值点。",
+      "type": "method",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp58",
+      "title": "单射、满射与双射",
+      "content": "单射：任一值域中的值对应定义域中唯一的值；满射：值域等于目标集合；双射：既是单射又是满射。双射函数可用于判断集合的势（大小）。",
+      "type": "concept",
+      "importance": 0.7,
+      "related_points": []
+    },
+    {
+      "id": "kp59",
+      "title": "无穷集合的大小判断",
+      "content": "通过集合的势判断无穷集合的大小。若集合的势小于自然数集的势（阿列夫零），则为有穷集。若两个集合间能建立双射，则等势。实数集及其子集等势，且大于自然数集。康托定理指出，集合的幂集大于当前集合。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp60",
+      "title": "欧氏距离及常见距离公式的缺点",
+      "content": "欧氏距离（n维空间两点线段长度）缺点：受数据尺度影响，需归一化。余弦相似距离缺点：仅考虑方向，忽略向量大小。曼哈顿距离（街道距离）缺点：不够直观，非最短距离。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp61",
+      "title": "最大似然估计",
+      "content": "最大似然估计的直观想法是：取到了某一样本值，表明取到这一样本的概率较大，因此认为取使得这一样本值的概率最大的参数值比较合理。操作方法：固定样本的观察值，在参数的取值空间中挑选使得似然函数在该样本值下达到最大值的参数，作为参数的估计值。",
+      "type": "method",
+      "importance": 0.9,
+      "related_points": []
+    },
+    {
+      "id": "kp62",
+      "title": "导数的本质",
+      "content": "当自变量的变化量趋于0时，函数值的变化量与自变量变化量比值的极限。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp63",
+      "title": "偏导数",
+      "content": "多元函数在某一点处沿某一坐标轴正方向的变化率。",
+      "type": "concept",
+      "importance": 0.7,
+      "related_points": []
+    },
+    {
+      "id": "kp64",
+      "title": "方向导数",
+      "content": "多元函数在某一点沿某一方向的变化率，等于各个坐标轴的偏导数组成的向量和方向向量的内积。",
+      "type": "concept",
+      "importance": 0.7,
+      "related_points": []
+    },
+    {
+      "id": "kp65",
+      "title": "梯度",
+      "content": "一个矢量，其方向上的方向导数最大，其大小正好是此最大方向导数。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp66",
+      "title": "梯度下降法",
+      "content": "沿着负梯度方向减小函数值，迭代朝着函数下坡最陡的方向运动，以此运动到函数的近似极小点。",
+      "type": "method",
+      "importance": 0.9,
+      "related_points": []
+    },
+    {
+      "id": "kp67",
+      "title": "链式法则",
+      "content": "复合函数的导数等于构成复合函数的各个函数的导数的乘积。",
+      "type": "formula",
+      "importance": 0.7,
+      "related_points": []
+    },
+    {
+      "id": "kp68",
+      "title": "导数和偏导数的区别",
+      "content": "导数是针对一元函数的概念，偏导数是针对多元函数对某一个自变量的导数。",
+      "type": "concept",
+      "importance": 0.7,
+      "related_points": []
+    },
+    {
+      "id": "kp69",
+      "title": "一元函数可导性关系",
+      "content": "可微和可导等价；可导必连续，连续不一定可导；连续必可积，可积不一定连续。",
+      "type": "principle",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp70",
+      "title": "二元函数可微性关系",
+      "content": "可微必连续，连续不一定可微；连续则二重极限存在；连续必可积，可积不一定连续。",
+      "type": "principle",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp71",
+      "title": "三个中值定理",
+      "content": "1. 罗尔中值定理：函数f(x)在闭区间连续，开区间可导，区间端点函数值相等，必存在一点导数值为0。\\n2. 拉格朗日中值定理：函数f(x)在闭区间连续，开区间可导，必存在一点导数值等于端点连线的斜率。\\n3. 柯西中值定理：函数f(x)和g(x)在闭区间连续，开区间可导，且任意一点g(x)导数值不为0，必存在一点，f(x)和g(x)导函数的比值等于两函数区间端点函数值之差的比值。",
+      "type": "theorem",
+      "importance": 0.85,
+      "related_points": [
+        "kp93",
+        "kp92",
+        "kp97"
+      ]
+    },
+    {
+      "id": "kp72",
+      "title": "罗尔中值定理",
+      "content": "函数f(x)在闭区间连续，开区间可导，且区间端点函数值相等，则必存在一点导数值为0。",
+      "type": "theorem",
+      "importance": 0.9,
+      "related_points": [
+        "kp96",
+        "kp92"
+      ]
+    },
+    {
+      "id": "kp73",
+      "title": "拉格朗日中值定理",
+      "content": "函数f(x)在闭区间连续，开区间可导，则必存在一点导数值等于端点连线的斜率。是罗尔中值定理的推广，不要求区间端点函数值相等。",
+      "type": "theorem",
+      "importance": 0.9,
+      "related_points": [
+        "kp96",
+        "kp93",
+        "kp97"
+      ]
+    },
+    {
+      "id": "kp74",
+      "title": "柯西中值定理",
+      "content": "函数f(x)和g(x)在闭区间连续，开区间可导，且任意一点g(x)导数值不为0，则必存在一点，f(x)和g(x)导函数的比值等于两函数区间端点函数值之差的比值。当g(x)=x时退化为拉格朗日中值定理。",
+      "type": "theorem",
+      "importance": 0.9,
+      "related_points": [
+        "kp96",
+        "kp92"
+      ]
+    },
+    {
+      "id": "kp75",
+      "title": "距离度量比较",
+      "content": "1. 余弦相似距离：只考虑数据方向，不考虑向量大小。\\n2. 欧氏距离：体现数值上的绝对差异。\\n3. 曼哈顿距离：计算沿坐标轴的距离总和。",
+      "type": "concept",
+      "importance": 0.7,
+      "related_points": []
+    },
+    {
+      "id": "kp76",
+      "title": "中值定理的物理意义",
+      "content": "罗尔定理表明往复运动的始终必存在某一时刻速度为0。拉格朗日中值定理表明一段物体从一个地方移动到另一个地方的始终，中间必有一点加速度为0。柯西中值定理表明一段曲线运动的过程中，必有一点速度方向和位移方向相同。",
+      "type": "fact",
+      "importance": 0.8,
+      "related_points": [
+        "kp93",
+        "kp92",
+        "kp97"
+      ]
+    },
+    {
+      "id": "kp77",
+      "title": "函数的阶",
+      "content": "函数的阶表示其无穷小的程度，阶数越高，无穷小程度越高。",
+      "type": "concept",
+      "importance": 0.7,
+      "related_points": []
+    },
+    {
+      "id": "kp78",
+      "title": "群的定义",
+      "content": "群是一个代数系统，具有可结合的二元运算，存在单位元和逆元。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": [
+        "kp94"
+      ]
+    },
+    {
+      "id": "kp79",
+      "title": "环的定义",
+      "content": "环是一个代数系统，包含两个运算：关于第一个运算构成交换群，关于第二个运算构成半群，且第二个运算对第一个运算满足分配律。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp80",
+      "title": "域的定义",
+      "content": "域是一个环，其乘法运算满足交换律，存在乘法单位元，且任意两个非零元素的乘积不为零。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": [
+        "kp94"
+      ]
+    },
+    {
+      "id": "kp81",
+      "title": "离散型随机变量",
+      "content": "0-1分布：描述样本空间只有0、1两个值的独立重复实验的概率分布。二项分布：描述样本空间只有两个值的n次独立重复实验的概率分布。泊松分布：用于预测单位时间或空间内随机事件发生次数的概率分布。几何分布：描述在伯努利试验中首次成功所需试验次数的概率分布。超几何分布：描述不放回抽样中特定事件发生次数的概率分布。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp82",
+      "title": "欧拉图与哈密顿图",
+      "content": "欧拉图是包含欧拉回路的图，欧拉回路是通过图中每条边一次且仅一次的回路。哈密顿图是包含哈密顿回路的图，哈密顿回路是通过图中每个顶点一次且仅一次的回路。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp83",
+      "title": "Hierholzer算法",
+      "content": "用于构造欧拉回路的算法，基于将多个回路拼接的思想。步骤：1)任选起始点；2)沿边遍历直到返回起始点形成回路；3)将新回路与已有路径拼接；4)重复直到所有边被遍历。",
+      "type": "method",
+      "importance": 0.7,
+      "related_points": [
+        "kp93"
+      ]
+    },
+    {
+      "id": "kp84",
+      "title": "Fleury算法",
+      "content": "用于寻找欧拉回路的算法。步骤：1)任选起始点；2)优先选择非桥边进行遍历；3)当无边可选时算法终止。避免选择桥边除非必要是该算法的关键。",
+      "type": "method",
+      "importance": 0.9,
+      "related_points": [
+        "kp92"
+      ]
+    },
+    {
+      "id": "kp85",
+      "title": "欧拉图与欧拉回路",
+      "content": "欧拉图是包含欧拉回路的图。欧拉回路是指能够通过图中所有的边一次且仅一次就通过所有顶点的回路。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": [
+        "kp94"
+      ]
+    },
+    {
+      "id": "kp86",
+      "title": "哈密顿图",
+      "content": "哈密顿图是NP-Hard问题，通常使用启发式算法如禁忌搜索、蚁群算法、遗传算法求近似解。",
+      "type": "concept",
+      "importance": 0.7,
+      "related_points": []
+    },
+    {
+      "id": "kp87",
+      "title": "欧拉函数",
+      "content": "欧拉函数φ(n)表示0到n-1中与n互素的数的个数，与图论的欧拉图无关。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp88",
+      "title": "哈夫曼树",
+      "content": "哈夫曼树是最优二叉树，通过合并权值最小的子树构建，用于最小化带权路径长度，应用于Huffman编码等场景。",
+      "type": "method",
+      "importance": 0.9,
+      "related_points": []
+    },
+    {
+      "id": "kp89",
+      "title": "无向图",
+      "content": "无向图由顶点集和边集构成，边表示顶点间的无序连接关系。",
+      "type": "concept",
+      "importance": 0.7,
+      "related_points": [
+        "kp96"
+      ]
+    },
+    {
+      "id": "kp90",
+      "title": "等价关系",
+      "content": "非空集合A上的关系R，满足自反性、对称性和传递性。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp91",
+      "title": "等价类",
+      "content": "集合A中所有与x等价的元素构成的集合。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp92",
+      "title": "极限与连续的关系",
+      "content": "极限存在不一定连续(因为连续必须在点上有定义)，连续一定存在极限。",
+      "type": "principle",
+      "importance": 0.8,
+      "related_points": [
+        "kp93",
+        "kp94"
+      ]
+    },
+    {
+      "id": "kp93",
+      "title": "连续的条件",
+      "content": "函数在某点连续必须满足：1. 在该点有定义；2. 极限存在且等于函数值。",
+      "type": "principle",
+      "importance": 0.8,
+      "related_points": [
+        "kp94",
+        "kp92"
+      ]
+    },
+    {
+      "id": "kp94",
+      "title": "间断点类型",
+      "content": "第一类间断点：跳跃间断点(左右极限存在但不相等)和可去间断点(在该点无定义)；第二类间断点：左右极限至少有一个不存在。",
+      "type": "concept",
+      "importance": 0.7,
+      "related_points": [
+        "kp93",
+        "kp92",
+        "kp95"
+      ]
+    },
+    {
+      "id": "kp95",
+      "title": "寻找间断点的方法",
+      "content": "1. 没有定义的点；2. 分段函数的分界点。",
+      "type": "method",
+      "importance": 0.7,
+      "related_points": [
+        "kp94"
+      ]
+    },
+    {
+      "id": "kp96",
+      "title": "介值定理",
+      "content": "若函数f(x)在闭区间[a,b]上连续，则对于任意介于f(a)和f(b)之间的值c，存在x∈[a,b]使得f(x)=c。",
+      "type": "theorem",
+      "importance": 0.9,
+      "related_points": [
+        "kp97"
+      ]
+    },
+    {
+      "id": "kp97",
+      "title": "零点定理",
+      "content": "若函数f(x)在闭区间[a,b]上连续，且f(a)·f(b)<0，则存在c∈(a,b)使得f(c)=0。",
+      "type": "theorem",
+      "importance": 0.9,
+      "related_points": [
+        "kp96"
+      ]
+    }
+  ]
+}

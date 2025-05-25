@@ -14,9 +14,6 @@ class PDFConverter:
         return self
 
     def extract_text_and_images_by_page(self):
-        """
-        提取每一页的文本和图片（按图片 y 坐标排序），组合为 markdown 格式
-        """
         if not self.input_path:
             print("未设置PDF文件路径")
             return []
@@ -82,15 +79,6 @@ class PDFConverter:
             return None
 
     def process_pdf(self, output_path=None):
-        """
-        处理PDF文件，提取文本和图像，并转换为Markdown格式
-        
-        参数:
-            output_path: 输出Markdown文件的路径，如果为None则使用默认路径
-            
-        返回:
-            成功时返回输出文件路径，失败时返回None
-        """
         if not self.input_path:
             print("未设置PDF文件路径")
             return None
