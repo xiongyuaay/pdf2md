@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 import os
 import json
 import argparse
@@ -37,7 +34,6 @@ def visualize_knowledge_graph(input_json_path, output_html_path=None, title="知
         print(f"错误: 输入文件不存在: {input_json_path}")
         return None
     
-    # 确定输出路径
     if not output_html_path:
         input_dir = os.path.dirname(input_json_path)
         input_filename = os.path.basename(input_json_path)
@@ -45,7 +41,6 @@ def visualize_knowledge_graph(input_json_path, output_html_path=None, title="知
         output_html_path = os.path.join(input_dir, f"{name}_visualization.html")
     
     try:
-        # 读取知识图谱数据
         with open(input_json_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
         
@@ -55,33 +50,27 @@ def visualize_knowledge_graph(input_json_path, output_html_path=None, title="知
         
         knowledge_points = data["knowledge_points"]
         
-        # 创建网络图
         net = Network(height="800px", width="100%", bgcolor="#ffffff", font_color="#333333")
         net.heading = title
         
-        # 添加节点
         for point in knowledge_points:
             node_id = point["id"]
             node_label = point["title"]
             node_type = point.get("type", "unknown")
             node_color = get_node_color(node_type)
             
-            # 创建节点标题(悬停时显示)
             node_title = f"<b>{point['title']}</b><br>"
             node_title += f"类型: {node_type}<br>"
             node_title += f"重要性: {point.get('importance', 'N/A')}<br>"
             node_title += f"内容: {point.get('content', '无内容')[:150]}..."
             
-            # 添加节点
             net.add_node(node_id, label=node_label, title=node_title, color=node_color)
         
-        # 添加边(关系)
-        edges_added = set()  # 跟踪已添加的边，避免重复
+        edges_added = set()
         
         for point in knowledge_points:
             source_id = point["id"]
             
-            # 检查是否有增强型关系数据
             if "relations" in point and isinstance(point["relations"], list):
                 for relation in point["relations"]:
                     target_id = relation.get("id")
@@ -95,7 +84,6 @@ def visualize_knowledge_graph(input_json_path, output_html_path=None, title="知
                         edges_added.add((source_id, target_id))
                         edges_added.add((target_id, source_id))  # 避免反向重复
             
-            # 检查常规related_points字段
             elif "related_points" in point and isinstance(point["related_points"], list):
                 for target_id in point["related_points"]:
                     if (source_id, target_id) not in edges_added:
@@ -103,7 +91,6 @@ def visualize_knowledge_graph(input_json_path, output_html_path=None, title="知
                         edges_added.add((source_id, target_id))
                         edges_added.add((target_id, source_id))  # 避免反向重复
         
-        # 配置网络图显示选项
         net.show_buttons(filter_=['physics'])
         net.set_options("""
         var options = {
@@ -112,7 +99,7 @@ def visualize_knowledge_graph(input_json_path, output_html_path=None, title="知
                 "size": 20,
                 "font": {
                     "size": 14,
-                    "face": "Tahoma"
+                    "face": "Arial, sans-serif, 'Microsoft YaHei', 'PingFang SC', 'Heiti TC', 'SimHei'"
                 },
                 "borderWidth": 2
             },
@@ -134,7 +121,6 @@ def visualize_knowledge_graph(input_json_path, output_html_path=None, title="知
         }
         """)
         
-        # 保存为HTML文件
         output_dir = os.path.dirname(output_html_path)
         if output_dir and not os.path.exists(output_dir):
             os.makedirs(output_dir)
@@ -155,7 +141,6 @@ def main():
     
     args = parser.parse_args()
     
-    # 使用硬编码的测试文件路径(如果未提供输入参数)
     if not args.input:
         args.input = r"E:/pdf教材知识整理/pdf2md/output/数学问题v1.0-_refined_knowledge_points_graph.json"
         print(f"未提供输入路径，使用默认路径: {args.input}")

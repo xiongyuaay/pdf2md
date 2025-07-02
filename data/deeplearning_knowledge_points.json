@@ -1,0 +1,227 @@
+{
+  "knowledge_points": [
+    {
+      "id": "kp1",
+      "title": "数据样本与特征",
+      "content": "每个数据集由样本(example/sample)组成，通常遵循独立同分布(i.i.d.)。样本也称为数据点(data point)或数据实例(data instance)，每个样本由一组特征(features/covariates)组成。在监督学习中，要预测的特殊属性称为标签(label/target)。",
+      "type": "concept",
+      "importance": 0.9,
+      "related_points": [
+        "kp20",
+        "kp21"
+      ]
+    },
+    {
+      "id": "kp2",
+      "title": "数据维度",
+      "content": "当每个样本的特征类别数量相同时，其特征向量是固定长度的，这个长度称为数据的维数(dimensionality)。固定长度的特征向量便于量化学习大量样本。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": [
+        "kp19"
+      ]
+    },
+    {
+      "id": "kp3",
+      "title": "非固定长度数据",
+      "content": "并非所有数据都能用固定长度向量表示(如图像分辨率不同、文本长度不同)。深度学习的一个主要优势是能处理不同长度的数据。",
+      "type": "fact",
+      "importance": 0.85,
+      "related_points": [
+        "kp20",
+        "kp19"
+      ]
+    },
+    {
+      "id": "kp4",
+      "title": "数据量与模型性能",
+      "content": "更多数据可以训练更强大模型，减少对预先假设的依赖。大数据集是现代深度学习成功的基础。但仅数据量大不够，还需要正确数据，否则会导致\"垃圾进垃圾出\"(Garbage in, garbage out)问题。",
+      "type": "principle",
+      "importance": 0.95,
+      "related_points": [
+        "kp19"
+      ]
+    },
+    {
+      "id": "kp5",
+      "title": "数据偏见问题",
+      "content": "不均衡数据集或包含社会偏见的数据会导致模型产生偏见。例如医疗数据缺少某些人群样本，或招聘数据包含历史不公正。",
+      "type": "fact",
+      "importance": 0.9,
+      "related_points": [
+        "kp22"
+      ]
+    },
+    {
+      "id": "kp6",
+      "title": "深度学习模型",
+      "content": "深度学习关注功能强大的模型，这些模型由神经网络错综复杂的交织在一起，包含层层数据转换。与传统方法相比，深度学习能处理更复杂的问题。",
+      "type": "concept",
+      "importance": 0.85,
+      "related_points": [
+        "kp21"
+      ]
+    },
+    {
+      "id": "kp7",
+      "title": "目标函数",
+      "content": "机器学习中的\"学习\"指自主提高模型完成任务的效能。需要定义模型优劣程度的度量，即目标函数。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": [
+        "kp13"
+      ]
+    },
+    {
+      "id": "kp8",
+      "title": "深度学习定义",
+      "content": "深度学习是指由神经网络错综复杂的交织在一起，包含层层数据转换的机器学习模型。",
+      "type": "concept",
+      "importance": 0.9,
+      "related_points": []
+    },
+    {
+      "id": "kp9",
+      "title": "目标函数",
+      "content": "目标函数是机器学习中定义模型优劣程度的度量，通常是可优化的函数。优化目标函数到最低点（或最高点）是模型学习的目标。",
+      "type": "concept",
+      "importance": 0.95,
+      "related_points": [
+        "kp22",
+        "kp21"
+      ]
+    },
+    {
+      "id": "kp10",
+      "title": "损失函数",
+      "content": "损失函数（或成本函数）是目标函数的一种常见形式，通常希望优化到最低点。例如平方误差（预测值与实际值之差的平方）和分类错误率。",
+      "type": "concept",
+      "importance": 0.9,
+      "related_points": [
+        "kp20"
+      ]
+    },
+    {
+      "id": "kp11",
+      "title": "训练集与测试集",
+      "content": "数据集通常分为训练集（用于拟合模型参数）和测试集（用于评估模型性能）。模型在训练集上表现良好但在测试集上表现差称为过拟合。",
+      "type": "concept",
+      "importance": 0.85,
+      "related_points": [
+        "kp20"
+      ]
+    },
+    {
+      "id": "kp12",
+      "title": "梯度下降",
+      "content": "梯度下降是一种常用的优化算法，通过检查每个参数对损失函数的影响，在可以减少损失的方向上优化参数。",
+      "type": "method",
+      "importance": 0.9,
+      "related_points": [
+        "kp20"
+      ]
+    },
+    {
+      "id": "kp13",
+      "title": "监督学习",
+      "content": "监督学习是在给定输入特征的情况下预测标签的机器学习方法。每个'特征-标签'对称为样本，目标是生成能将输入特征映射到标签的模型。",
+      "type": "concept",
+      "importance": 0.95,
+      "related_points": [
+        "kp20"
+      ]
+    },
+    {
+      "id": "kp14",
+      "title": "监督学习的定义与作用",
+      "content": "监督学习之所以能发挥作用，是因为在训练参数时，我们为模型提供了一个数据集，其中每个样本都有真实的标签。用概率论术语来说，我们希望预测\\\"估计给定输入特征的标签\\\"的条件概率。",
+      "type": "concept",
+      "importance": 0.9,
+      "related_points": [
+        "kp20",
+        "kp21"
+      ]
+    },
+    {
+      "id": "kp15",
+      "title": "监督学习的三大步骤",
+      "content": "1. 从已知大量数据样本中随机选取一个子集，为每个样本获取真实标签。这些输入和相应的标签一起构成了训练数据集；\\n2. 选择有监督的学习算法，它将训练数据集作为输入，并输出一个\\\"已完成学习的模型\\\"；\\n3. 将之前没有见过的样本特征放到这个\\\"已完成学习的模型\\\"中，使用模型的输出作为相应标签的预测。",
+      "type": "method",
+      "importance": 0.85,
+      "related_points": [
+        "kp19"
+      ]
+    },
+    {
+      "id": "kp16",
+      "title": "回归问题的定义与示例",
+      "content": "回归（regression）是最简单的监督学习任务之一。当标签取任意数值时，我们称之为回归问题，此时的目标是生成一个模型，使它的预测非常接近实际标签值。判断回归问题的一个很好的经验法则是，任何有关\\\"有多少\\\"的问题很可能就是回归问题。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": [
+        "kp22",
+        "kp19"
+      ]
+    },
+    {
+      "id": "kp17",
+      "title": "分类问题的定义与示例",
+      "content": "分类（classification）问题希望模型能够预测\\\"哪一个\\\"的问题。例如，一家银行希望在其移动应用程序中自动理解从图像中看到的文本，并将手写字符映射到对应的已知字符之上。",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": [
+        "kp21",
+        "kp19"
+      ]
+    },
+    {
+      "id": "kp18",
+      "title": "平方误差损失函数",
+      "content": "在回归问题中，我们将尝试学习最小化\\\"预测值和实际标签值的差异\\\"的模型。本书大部分章节将关注平方误差损失函数的最小化。",
+      "type": "method",
+      "importance": 0.75,
+      "related_points": [
+        "kp21"
+      ]
+    },
+    {
+      "id": "kp19",
+      "title": "回归模型的目标",
+      "content": "回归模型的目标是最小化预测值和实际标签值之间的差异，通常使用平方误差损失函数进行优化。",
+      "type": "principle",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp20",
+      "title": "分类问题的定义",
+      "content": "分类问题是预测样本属于哪个类别（class）的问题，例如手写字符识别中将字符映射到对应的已知类别。",
+      "type": "concept",
+      "importance": 0.9,
+      "related_points": [
+        "kp21"
+      ]
+    },
+    {
+      "id": "kp21",
+      "title": "二项分类",
+      "content": "最简单的分类问题是二项分类（binomial classification），只有两个类别，例如{猫, 狗}。",
+      "type": "concept",
+      "importance": 0.7,
+      "related_points": [
+        "kp20"
+      ]
+    },
+    {
+      "id": "kp22",
+      "title": "分类器的概率输出",
+      "content": "分类器可以为每个可能的类别分配一个概率，例如在猫狗分类中，模型会输出图像属于猫或狗的概率。",
+      "type": "principle",
+      "importance": 0.8,
+      "related_points": [
+        "kp20",
+        "kp21"
+      ]
+    }
+  ]
+}

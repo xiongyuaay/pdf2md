@@ -1,0 +1,196 @@
+{
+  "knowledge_points": [
+    {
+      "id": "kp1",
+      "title": "CFA performance advantages",
+      "content": "Experimental results show that CFA outperforms baseline methods in success rate, divergence, and harmfulness, particularly demonstrating significant advantages on Llama3 and GPT-4.",
+      "type": "fact",
+      "importance": 0.9,
+      "related_points": []
+    },
+    {
+      "id": "kp2",
+      "title": "Single-Turn Jailbreak Attacks",
+      "content": "Early approaches relied on manually crafting prompts to execute jailbreak attacks. Manual crafting was time and labor-intensive, leading to gradual shift towards automation.",
+      "type": "concept",
+      "importance": 0.8,
+      "related_points": [
+        "kp17",
+        "kp18"
+      ]
+    },
+    {
+      "id": "kp3",
+      "title": "GCG Method",
+      "content": "The GCG method employed white-box attacks utilizing gradient information for jailbreak, resulting in poor readability of GCG-like outputs.",
+      "type": "method",
+      "importance": 0.7,
+      "related_points": [
+        "kp16"
+      ]
+    },
+    {
+      "id": "kp4",
+      "title": "AutoDAN Method",
+      "content": "AutoDAN introduced genetic algorithms for automated updates in jailbreak attacks.",
+      "type": "method",
+      "importance": 0.7,
+      "related_points": [
+        "kp16"
+      ]
+    },
+    {
+      "id": "kp5",
+      "title": "Masterkey Approach",
+      "content": "Masterkey explored black-box approaches using time-based SQL injection to probe the defense mechanisms of LLM chatbots. It also leveraged fine-tuning and RFLH LLMs for automated jailbreak expansion.",
+      "type": "method",
+      "importance": 0.8,
+      "related_points": [
+        "kp16"
+      ]
+    },
+    {
+      "id": "kp6",
+      "title": "PAIR Method",
+      "content": "PAIR proposed iterative search in large model conversations, continuously optimizing single-turn attack prompts.",
+      "type": "method",
+      "importance": 0.7,
+      "related_points": [
+        "kp16"
+      ]
+    },
+    {
+      "id": "kp7",
+      "title": "GPTFUzz Technique",
+      "content": "GPTFUzz combined attacks with fuzzing techniques, continually generating attack prompts based on template seeds.",
+      "type": "method",
+      "importance": 0.7,
+      "related_points": [
+        "kp16"
+      ]
+    },
+    {
+      "id": "kp8",
+      "title": "Multilingual and Obfuscation Attacks",
+      "content": "Multilingual attacks utilized low-resource training languages, while obfuscation level attacks used instruction obfuscation to execute attacks.",
+      "type": "method",
+      "importance": 0.6,
+      "related_points": [
+        "kp16"
+      ]
+    },
+    {
+      "id": "kp9",
+      "title": "Single-Turn Attack Limitations",
+      "content": "Single-turn jailbreak attack patterns are straightforward and thus easily detectable and defensible. As security alignments strengthen, previously effective prompts may become ineffective after model updates.",
+      "type": "principle",
+      "importance": 0.8,
+      "related_points": [
+        "kp16"
+      ]
+    },
+    {
+      "id": "kp10",
+      "title": "Multi-Turn Jailbreak Attack",
+      "content": "Multi-turn jailbreak attacks leverage multi-turn dialogues to circumvent LLM security measures, presenting privacy and security risks by extracting personally identifiable information (PII). These attacks progressively intensify malicious intent through sentence and goal reconstruction.",
+      "type": "method",
+      "importance": 0.9,
+      "related_points": [
+        "kp17",
+        "kp16"
+      ]
+    },
+    {
+      "id": "kp11",
+      "title": "Multi-Turn Template Construction",
+      "content": "Manual construction of multi-turn templates, combined with automated generation using models like GPT-4, is used to execute jailbreak attacks by reconstructing sentences and goals to intensify malicious intent.",
+      "type": "method",
+      "importance": 0.8,
+      "related_points": [
+        "kp15"
+      ]
+    },
+    {
+      "id": "kp12",
+      "title": "Conversation Understanding (CoU) Prompt Chains",
+      "content": "CoU prompt chains are explored for jailbreak attacks on LLMs, involving the creation of a red team dataset and proposing a security alignment method based on gradient ascent to penalize harmful responses.",
+      "type": "method",
+      "importance": 0.7,
+      "related_points": [
+        "kp15"
+      ]
+    },
+    {
+      "id": "kp13",
+      "title": "Semantic-Driven Context Multi-Turn Attack",
+      "content": "A semantic-driven context multi-turn attack method adapts attack strategies adaptively through context feedback and semantic relevance in multi-turn dialogues of LLMs, undermining security constraints while preserving original intent.",
+      "type": "method",
+      "importance": 0.8,
+      "related_points": [
+        "kp15"
+      ]
+    },
+    {
+      "id": "kp14",
+      "title": "Prompt Decomposition and Implicit Reconstruction",
+      "content": "Original prompts are decomposed into sub-prompts and subjected to semantically similar but harmless implicit reconstruction, analyzing syntax to replace synonyms while preserving the original intent and undermining security constraints.",
+      "type": "method",
+      "importance": 0.7,
+      "related_points": [
+        "kp15"
+      ]
+    },
+    {
+      "id": "kp15",
+      "title": "Semantic-driven context multi-turn attack method",
+      "content": "A method that adapts attack strategies through context feedback and semantic relevance in multi-turn dialogues of LLMs, achieving semantic-level jailbreak attacks.",
+      "type": "method",
+      "importance": 0.9,
+      "related_points": [
+        "kp16"
+      ]
+    },
+    {
+      "id": "kp16",
+      "title": "Multi-turn contextual fusion attack strategy",
+      "content": "A refined attack strategy that re-examines the advantages of multi-turn attacks, addressing vague strategies and high false positive rates in multi-turn semantic jailbreak attacks.",
+      "type": "method",
+      "importance": 0.85,
+      "related_points": [
+        "kp15"
+      ]
+    },
+    {
+      "id": "kp17",
+      "title": "Impact of system prompts on jailbreak attacks",
+      "content": "Research reveals the transferable characteristics of prison prompts in LLMs and proposes an evolutionary algorithm targeting system prompts to enhance model robustness.",
+      "type": "principle",
+      "importance": 0.8,
+      "related_points": []
+    },
+    {
+      "id": "kp18",
+      "title": "Security risks from fine-tuning LLMs",
+      "content": "Malicious fine-tuning can breach the model's security alignment mechanism, posing significant security risks.",
+      "type": "fact",
+      "importance": 0.85,
+      "related_points": []
+    },
+    {
+      "id": "kp19",
+      "title": "Vulnerabilities in alignment procedures",
+      "content": "Existing alignment procedures and assessments may have flaws when configurations vary slightly, based on default decoding settings.",
+      "type": "fact",
+      "importance": 0.75,
+      "related_points": []
+    },
+    {
+      "id": "kp20",
+      "title": "Harmful responses in top k hard label information",
+      "content": "Even if LLM rejects toxic queries, harmful responses can be concealed within the top k hard label information, coercing the model to divulge it during autoregressive processes.",
+      "type": "fact",
+      "importance": 0.8,
+      "related_points": []
+    }
+  ]
+}

@@ -1,40 +1,39 @@
-#!/usr/bin/env python3
-"""
-知识图谱构建命令行工具
-"""
-
 import os
 import sys
-import argparse
-from knowledge_graph.knowledge_graph_builder import KnowledgeGraphBuilder
-
+from knowledge_graph.llm_knowledge_graph_builder import LLMKnowledgeGraphBuilder
 
 def main():
-    parser = argparse.ArgumentParser(description='构建基于Sentence Transformers的知识图谱')
+    if len(sys.argv) < 2:
+        print("使用方法: python build_knowledge_graph.py <知识点JSON文件>")
+        sys.exit(1)
     
-    parser.add_argument('--embedding_model', '-e', type=str, default='paraphrase-multilingual-MiniLM-L12-v2', 
-                        help='Sentence Transformers嵌入模型名称 (默认: paraphrase-multilingual-MiniLM-L12-v2)')
-    parser.add_argument('--threshold', '-t', type=float, default=0.7, help='相似度阈值 (默认: 0.7)')
-    parser.add_argument('--max_relations', '-m', type=int, default=5, help='每个知识点最多关联数量 (默认: 5)')
+    input_file = sys.argv[1]
     
-    args = parser.parse_args()
-    args.input = r"E:/pdf教材知识整理/pdf2md/output/数学问题v1.0-_knowledge_points.json"
-    args.output = r"E:/pdf教材知识整理/pdf2md/output/数学问题v1.0-_graph.json"
+    if not os.path.exists(input_file):
+        print(f"错误: 文件不存在: {input_file}")
+        sys.exit(1)
     
-    builder = KnowledgeGraphBuilder(
-        embedding_model_name=args.embedding_model
-    )
+    api_key = os.getenv("OPENAI_API_KEY")
+    base_url = os.getenv("OPENAI_BASE_URL", "https://api.openai.com/v1")
+    model = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
     
-    print("处理中...")
-    output_path = builder.process_knowledge_file(
-        args.input,
-        args.output,
-        similarity_threshold=args.threshold,
-        max_relations=args.max_relations
-    )
+    if not api_key:
+        print("错误: 请设置OPENAI_API_KEY环境变量")
+        sys.exit(1)
     
-    print("处理完成")
-
+    try:
+        builder = LLMKnowledgeGraphBuilder(
+            api_key=api_key,
+            base_url=base_url,
+            model_name=model
+        )
+        
+        output_file = builder.process_knowledge_file(input_file)
+        print(f"知识图谱已生成: {output_file}")
+        
+    except Exception as e:
+        print(f"构建知识图谱失败: {e}")
+        sys.exit(1)
 
 if __name__ == "__main__":
     main() 

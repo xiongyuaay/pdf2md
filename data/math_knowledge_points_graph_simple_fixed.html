@@ -1,0 +1,2545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>知识图谱可视化（修复版）</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+        }
+        
+        .stats {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            display: block;
+        }
+        
+        .node-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .node-card {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            background: white;
+        }
+        
+        .node-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .node-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .node-type-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            color: white;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        
+        .node-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+            flex-grow: 1;
+        }
+        
+        .importance-bar {
+            width: 100%;
+            height: 6px;
+            background-color: #ecf0f1;
+            border-radius: 3px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+        
+        .importance-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f39c12, #e74c3c);
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+        
+        .node-content {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            line-height: 1.5;
+            max-height: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .relations-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #ecf0f1;
+        }
+        
+        .relation-item {
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 5px;
+            margin: 5px 0;
+            border-left: 4px solid #3498db;
+            font-size: 0.9em;
+        }
+        
+        .relation-type {
+            font-weight: bold;
+            color: #2980b9;
+        }
+        
+        .confidence {
+            float: right;
+            color: #7f8c8d;
+            font-size: 0.8em;
+        }
+        
+        .no-relations {
+            color: #bdc3c7;
+            font-style: italic;
+            text-align: center;
+            padding: 10px;
+        }
+        
+        .section-title {
+            color: #2c3e50;
+            font-size: 1.5em;
+            margin: 30px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>知识图谱可视化（修复版）</h1>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-number">93</span>
+                <span>知识点总数</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">81</span>
+                <span>关系总数</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number">6</span>
+                <span>知识点类型</span>
+            </div>
+        </div>
+        
+        <h2 class="section-title">知识点详情</h2>
+        <div class="node-grid">
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">矩阵的秩</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        矩阵的秩的两种解释：1.经过矩阵变换后的维度；2.列空间的维度，列空间是由列向量所张成的空间；3.一个矩阵A的列秩是A的线性独立的纵列的极大数目。类似地，行秩是A的线性无关的横行的极大数目。\n满秩代表矩阵的每一行都有一个主元，表明线性方程组一定有解，且所生的向量也为n维。\n不满秩与上述相反，说明至少有一行不存在主元，若存在一行全0则说明所形成的线性方程组有无穷多个解，若最后一列为非0且是非线性...
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">前提条件</span> → 线性相关与线性无关
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                        <div class="relation-item">
+                            <span class="relation-type">前提条件</span> → 线性方程组Ax=b有解条件
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">线性相关与线性无关</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        线性相关：一组数据中有一个或者多个量可以被其余量表示。\n线性无关：与线性相关相反，也叫线性独立。\n对于线性空间中的n个向量，假如存在n个常数使得这n个常数与n个向量对应乘积加合等于0，则称这n个向量线性相关，如果不存在这样的n个常数，称之为线性无关。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">前提条件</span> → 向量的基
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">向量空间与线性空间</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        凡是具有加法结构和数乘结构的集合都可以叫做线性空间。向量空间指一个有线性运算规则的集合，集合的元素可以称为向量，规则是线性运算（即加法和数乘一般性数学定理）。\n向量空间通常特指由向量构成的线性空间。\n所有n维向量构成的集合称为n维向量空间。\n将n维向量空间抽象化，便引出线性空间的概念。定义集合V上的两种代数运算：加法和数乘。V中任意两向量之和与V中的一个向量gamma对应；V中任意向量和域K...
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">相似概念</span> → 线性空间(向量空间)定义
+                            <span class="confidence">置信度: 0.90</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">向量的基</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 70.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.70
+                    </div>
+                    
+                    <div class="node-content">
+                        在线性空间V中可以找到n个向量，这n个向量线性无关，并且线性空间V中的任意一个向量都和这n个向量线性相关，那么这n个向量就称作线性空间V的基。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">相似概念</span> → 向量基的定义
+                            <span class="confidence">置信度: 0.90</span>
+                        </div>
+                        <div class="relation-item">
+                            <span class="relation-type">部分-整体</span> → 向量空间与线性空间
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">线性空间(向量空间)定义</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        合V 就称作线性空间，又叫向量空间。V 中的元素统称为&quot;向量&quot;。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">向量基的定义</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 95.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.95
+                    </div>
+                    
+                    <div class="node-content">
+                        在线性空间V 中可以找到n 个向量，这n 个向量线性无关，并且线性空间V 中的任意一个向量都和这n 个向量线性相关，那么这n 个向量就称作线性空间V 的基。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">向量正交与矩阵正交</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 85.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.85
+                    </div>
+                    
+                    <div class="node-content">
+                        正交向量组中，任意两个向量的数量积为0。\n正交矩阵的每一列都是一个单位向量，并且任意两列求数量积都为0。\n两个矩阵正交，表示这两个矩阵相乘结果为单位矩阵。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">前提条件</span> → 正定矩阵定义与判定
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">高斯分布(正态分布)特性</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        一个随机变量如果是由大量微小、独立的随机因素的叠加结果，那么这个变量一般都可以认为服从正态分布。\n正态分布曲线关于其均值点对称，标准差越大图像越扁平。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">相似矩阵定义</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        对于两个矩阵A、B，如果存在一个矩阵P，使得矩阵P 的逆乘矩阵A 乘矩阵P 等于矩阵B，那么矩阵A 相似于矩阵B。相似矩阵A 和B 它们的特征值相同。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">前提条件</span> → 特征值与特征向量关系
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">正定矩阵定义与判定</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 95.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.95
+                    </div>
+                    
+                    <div class="node-content">
+                        一个实对称矩阵S 对于任一n 行1 列的矩阵alpha 都有alpha 的转置乘矩阵S 乘alpha 都大于0，则该矩阵正定。\n判定方法：\n1. 矩阵是对称的\n2. 所有特征值大于零\n3. 各阶主子式大于零\n求特征值或主子式可判定正定性。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">前提条件</span> → 特征值与特征向量关系
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">矩阵范数定义</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 85.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.85
+                    </div>
+                    
+                    <div class="node-content">
+                        矩阵范数是一个满足非负性、齐次性、三角不等式以及相容性的函数。\n矩阵一范数就是矩阵所有元素取绝对值，然后求最大列和。\n矩阵A 的2 范数就是&quot;矩阵A 的转置与矩阵A 相乘所得矩阵&quot;的最大特征值。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">特征值与特征向量关系</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 95.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.95
+                    </div>
+                    
+                    <div class="node-content">
+                        矩阵的特征向量是这样的向量：矩阵作用于该向量后，向量保持方向不变，进行某一比例的伸缩变换，而这个比例就是特征值。\n特征值与特征向量的关系就是，特征向量与特征值进行数乘操作后所得的向量，和矩阵对该向量进行变换所得向量相同。\n特征值的含义就是和矩阵具有同等变换效果的常数，而特征向量就是与矩阵作用之后保持方向不变的向量。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">相似概念</span> → 特征值与特征向量
+                            <span class="confidence">置信度: 0.90</span>
+                        </div>
+                        <div class="relation-item">
+                            <span class="relation-type">后续知识</span> → 特征值特征向量的应用
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #2ecc71;">method</span>
+                        <span class="node-title">特征值特征向量的应用</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        特征值可以用于奇异值分解、主成分分析。可以用于谱分解、特征值分解。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">线性方程组Ax=b有解条件</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        线性方程组Ax=b 的充要条件是，系数矩阵A 和增广矩阵B 的秩相等。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">相似概念</span> → 线性方程组解的条件
+                            <span class="confidence">置信度: 0.90</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">特征值与特征向量</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        特征值是线性变换中保持方向不变的缩放因子，特征向量是与矩阵作用之后保持方向不变的向量。特征值可用于奇异值分解、主成分分析、谱分解和特征值分解。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">相似概念</span> → 特征值与特征向量关系
+                            <span class="confidence">置信度: 0.90</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">线性方程组解的条件</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 85.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.85
+                    </div>
+                    
+                    <div class="node-content">
+                        线性方程组Ax=b有解的充要条件是系数矩阵A和增广矩阵B的秩相等。当有解时，若m&gt;=r=rank(A)，通解依赖于m-r个独立参数；当m=r时具有唯一解。齐次线性方程组必有零解，有非零解的充要条件是系数矩阵A的秩&lt;m，通解依赖于m-r个独立参数。非齐次线性方程组的通解由相伴齐次方程组的通解和非齐次方程组的一个特解组成。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">张量的定义</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 70.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.70
+                    </div>
+                    
+                    <div class="node-content">
+                        张量是标量、向量、矩阵的推广：标量是0阶张量，矢量是1阶张量，矩阵是2阶张量。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #2ecc71;">method</span>
+                        <span class="node-title">初等行变换的三种变换</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        1. 交换两行\n2. 用非零常数k乘某一行\n3. 将某一行的L倍加到另一行上
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">后续知识</span> → 矩阵的秩
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                        <div class="relation-item">
+                            <span class="relation-type">后续知识</span> → 线性方程组Ax=b有解条件
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">线性相关与线性无关</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 75.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.75
+                    </div>
+                    
+                    <div class="node-content">
+                        向量组线性无关当且仅当向量方程仅有平凡解。零向量是线性相关的。线性相关集中可能存在某个向量不是其他向量的线性组合。当矩阵是长方形时必定线性相关。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #f39c12;">fact</span>
+                        <span class="node-title">可逆矩阵的性质</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        可逆矩阵(非奇异矩阵)的行列式不为0，其逆矩阵唯一。不可逆矩阵称为奇异矩阵。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">前提条件</span> → 矩阵的秩
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #2ecc71;">method</span>
+                        <span class="node-title">克莱姆法则</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 70.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.70
+                    </div>
+                    
+                    <div class="node-content">
+                        求解线性方程组的克莱姆法则要求：1)方程个数等于未知量个数；2)系数矩阵的行列式不为0。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">随机变量与普通变量的区别</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        随机变量是量化随机事件的函数，取值有多个且每个取值都有概率，试验前不可预知。普通变量描述确定性现象，取值固定唯一。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">前提条件</span> → 随机变量与概率分布的关系
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">随机变量与概率分布的关系</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 85.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.85
+                    </div>
+                    
+                    <div class="node-content">
+                        随机变量的分布函数描述了其统计规律性，通过分布函数可以确定随机变量落在某区间的概率。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">后续知识</span> → 常见概率分布及应用
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">联合概率与边缘概率</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 75.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.75
+                    </div>
+                    
+                    <div class="node-content">
+                        联合概率基于多个随机变量及其相互作用的样本空间；边缘概率是多维随机变量中某子空间的概率。边缘概率可通过固定联合概率中某些变量的取值得到。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">部分-整体</span> → 边缘概率
+                            <span class="confidence">置信度: 0.90</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #f39c12;">fact</span>
+                        <span class="node-title">常见概率分布及应用</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        离散分布：\n1. 二项分布：n重伯努利试验，如产品合格率检验\n2. 两点分布(0-1分布)：比赛胜率估计\n3. 泊松分布：单位时间/空间内事件频数，如顾客到达数、铸件砂眼数
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">相似概念</span> → 常见概率分布及应用
+                            <span class="confidence">置信度: 0.95</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">边缘概率</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 70.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.70
+                    </div>
+                    
+                    <div class="node-content">
+                        在联合概率的基础上固定若干个随机变量的取值便得到边缘概率。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #f39c12;">fact</span>
+                        <span class="node-title">常见概率分布及应用</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        离散分布：\n- 二项分布：n重伯努利检验，常用于检查产品合格率、色盲率调查等\n- 两点分布（01分布）：比赛胜率估计\n- 泊松分布：单位时间内或单位空间中事件数量的频数分布，常用于一天内到达顾客数、铸件上的砂眼数等\n- 超几何分布：用于有限总体中进行不放回抽样\n- 几何分布：一次伯努利试验中事件A首次出现时的试验次数\n连续分布：\n- 均匀分布\n- 正态分布：主要应用于统计理论、误差...
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">切比雪夫大数定律</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 85.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.85
+                    </div>
+                    
+                    <div class="node-content">
+                        只要随机试验的次数n充分大，样本均值趋近于总体均值，指明了平均结果的渐趋稳定性。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">相似概念</span> → 辛钦大数定理
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                        <div class="relation-item">
+                            <span class="relation-type">相似概念</span> → 伯努利大数定律
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">辛钦大数定理</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 85.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.85
+                    </div>
+                    
+                    <div class="node-content">
+                        对于独立同分布且具有均值u的n个随机变量，当n很大的时候它们的算术平均值依概率收敛于u。样本均值稳定于数学期望。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">伯努利大数定律</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 85.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.85
+                    </div>
+                    
+                    <div class="node-content">
+                        只要随机试验的次数n充分大，那么事件A频率和概率的绝对偏差很小，说明在实际应用中，试验次数很大的时候可以用事件的频率来替代事件的概率。频率稳定于概率。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">中心极限定理</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 95.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.95
+                    </div>
+                    
+                    <div class="node-content">
+                        均值为u，标准差为sigma的独立同分布的n个随机变量之和的标准化变量在n充分大的时候近似服从于标准正态分布。大量独立同分布的随机变量和的极限分布服从标准正态分布。由此推论均值为u标准差为sigma的独立同分布的n个随机变量的算术平均值，当n充分大的时候近似服从均值为u方差为sigma^2/n的正态分布。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">后续知识</span> → 正态分布的可加性
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">正态分布的可加性</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        彼此独立的正态分布的和仍然是正态分布。如果多个随机变量分别服从不同的正态分布，且这些随机变量彼此独立，那么这些随机变量的和也服从正态分布。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">假设检验基本概念</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        用来判断样本与样本、样本与总体的差异是由抽样误差引起还是本质差别造成的统计推断方法。基本思想是&quot;小概率事件&quot;原理，其统计推断方法是带有某种概率性质的反证法。小概率思想是指小概率事件（检验的显著性水平，一般取0.05，0.01，0.1）在一次试验中基本上不会发生。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">相似概念</span> → 假设检验的基本概念
+                            <span class="confidence">置信度: 0.95</span>
+                        </div>
+                        <div class="relation-item">
+                            <span class="relation-type">前提条件</span> → 假设检验过程
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #2ecc71;">method</span>
+                        <span class="node-title">假设检验过程</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 85.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.85
+                    </div>
+                    
+                    <div class="node-content">
+                        先提出检验假设，再用适当的统计方法，利用小概率原理，确定假设是否成立。即为了检验一个假设H0是否正确，首先假定该假设H0正确，然后根据样本对假设H0做出接受或拒绝的决策。如果样本观察值导致了&quot;小概率事件&quot;发生，就应拒绝假设H0，否则应接受假设H0。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">假设检验的基本概念</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        假设检验是通过样本来决定对所做出的假设接受或者拒绝的过程。假设是关于总体参数的参数空间的一部分，包括原假设和备择假设，这两个假设互补。检验是对于假设检验问题满足某一显著性水平的概率的不等式，通过这一不等式来判断某一估计是否满足需求。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">数学期望的定义</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        随机变量的数学期望是随机变量每个取值与该取值的概率的乘积的累加和，描述了随机变量的集中特性。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">互补概念</span> → 方差的定义
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">方差的定义</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        随机变量的方差描述了随机变量的波动特性，即离散特性，其定义是随机变量的每个取值和数学期望的偏差平方和与该取值的概率的乘积的连加和。方差描述了随机变量在均值附近的分散程度。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">独立与不相关的区别</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 70.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.70
+                    </div>
+                    
+                    <div class="node-content">
+                        独立一定不相关，而不相关不一定独立。例如线性不相关的随机变量可能是非线性相关。最常见的例子就是Logistics函数或者二次函数，自变量和因变量计算所得相关系数很低，但是是互相依赖的变量。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">前提条件</span> → 数学期望的定义
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">概率密度函数的定义</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        连续随机变量的一切取值充满整个样本空间，无法采用分布列表示，因此采用概率密度函数表示。概率密度函数能在一定程度上反应随机变量X在某点附近取值的概率大小，但概率密度函数不是概率，乘以区间长度微元后就表示概率的近似值。概率密度函数在一段区间上的积分就是随机变量X在这段区间上取值的概率。如果存在实数轴上的一个非负可积函数使得对任意实数x都有这个函数从负无穷到x的积分值就是随机变量X的分布函数F(x)，这...
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">前提条件</span> → 随机变量与概率分布的关系
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #9b59b6;">formula</span>
+                        <span class="node-title">全概率公式</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        全概率公式表示达到某个目的有多种方式（或造成某种结果有多种原因），问达到目的的概率是多少（造成这种结果的概率是多少）。设事件是一个完备事件组，则对于任意一个事件Ｃ，若有公式成立，就称这个公式为全概率公式。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">后续知识</span> → 联合概率与边缘概率
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #9b59b6;">formula</span>
+                        <span class="node-title">贝叶斯公式</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        贝叶斯公式是当已知结果，问导致这个结果的第i原因的可能性是多少。在已知条件概率和全概率的基础上，贝叶斯公式是很容易计算的。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">后续知识</span> → 先验概率与后验概率
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                        <div class="relation-item">
+                            <span class="relation-type">前提条件</span> → 极大似然估计
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">协方差与相关系数</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        随机变量X和Y的协方差是X的偏差和Y的偏差乘积的数学期望。若协方差大于零，表示这两个随机变量呈正相关关系；若协方差小于零，表示两个随机变量呈负相关关系；协方差等于零表示不线性相关。相关系数是标准化的协方差，没有量纲，取值范围在[0,1]。取值为0不能说明两个分布无关，而是线性不相关，有可能存在非线性的相关关系，也有可能取值毫无关联。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">部分-整体</span> → 概率与统计的区别
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">正态分布的相加与相乘</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 70.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.70
+                    </div>
+                    
+                    <div class="node-content">
+                        若干正态分布相加后得到的分布仍然是正态分布。正态分布相乘之后，服从的分布为：正态分布乘以常数。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">前提条件</span> → 正态分布相加相乘的结果
+                            <span class="confidence">置信度: 0.90</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #f39c12;">fact</span>
+                        <span class="node-title">正态分布相加相乘的结果</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        若干正态分布相加后仍为正态分布。正态分布相乘后服从的分布为：正态分布乘以常数。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #2ecc71;">method</span>
+                        <span class="node-title">利用不均匀硬币产生等概率</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        对于一枚不均匀硬币（正面概率p，反面概率1-p），可以通过以下方法得到1/2概率：连续抛两次硬币，若结果为正面-反面则输出正面，反面-正面则输出反面，其他情况重新抛。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">后续知识</span> → 机器学习使用概率的原因
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">机器学习使用概率的原因</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 85.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.85
+                    </div>
+                    
+                    <div class="node-content">
+                        1. 机器学习是数据驱动的方法，其设计和评价都基于概率假设\n2. 数据特征提取和模型建立都涉及概率\n3. 模型误差的评价指标本身就是概率形式
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #2ecc71;">method</span>
+                        <span class="node-title">极大似然估计</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 100.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 1.00
+                    </div>
+                    
+                    <div class="node-content">
+                        利用已知的样本结果信息，反推最有可能导致这些样本结果出现的模型参数值。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">后续知识</span> → 参数估计的评价标准
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">参数估计的评价标准</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        1. 无偏性：估计量的期望等于真实参数\n2. 有效性：估计量的方差尽可能小\n3. 一致性：样本量增大时估计量收敛于真实参数\n4. 区间估计：以一定置信度包含参数的区间
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">独立与互不相容的关系</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        两事件相互独立则一定相容（P(AB)=P(A)P(B)&gt;0），互不相容则要么不独立要么其中一事件概率为0或1（P(AB)=0）。两者不能同时成立。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">互补概念</span> → 先验概率与后验概率
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">先验概率与后验概率</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 85.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.85
+                    </div>
+                    
+                    <div class="node-content">
+                        先验概率：根据以往经验得到的概率，是&quot;由因求果&quot;中的&quot;因&quot;\n后验概率：在结果已知条件下，反推原因的概率，是&quot;执果寻因&quot;中的&quot;果&quot;
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">前提条件</span> → 贝叶斯公式
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">分布函数的充要条件</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        1. F(x)单调不减\n2. 0≤F(x)≤1，lim(x→-∞)F(x)=0，lim(x→+∞)F(x)=1\n3. F(x)右连续
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">相似概念</span> → 分布函数的充要条件
+                            <span class="confidence">置信度: 1.00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">概率与统计的区别</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 70.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.70
+                    </div>
+                    
+                    <div class="node-content">
+                        概率：已知模型和参数，推导数据\n统计：已知数据，推导模型和参数
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">相似概念</span> → 概率与统计的区别
+                            <span class="confidence">置信度: 1.00</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #9b59b6;">formula</span>
+                        <span class="node-title">贝叶斯公式</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        贝叶斯公式描述了先验概率和后验概率之间的关系。先验概率是在考虑新证据之前事件的概率，后验概率是在考虑新证据之后事件的概率。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">分布函数的充要条件</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        函数F(x)是分布函数的充要条件：
+1. F(x)是单调不减函数
+2. 分布函数有界，0≤F(x)≤1，左右极限分别为0和1
+3. 分布函数是右连续的，但左连续不一定
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">概率与统计的区别</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 70.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.70
+                    </div>
+                    
+                    <div class="node-content">
+                        概率是已知模型和参数，推导数据。统计是已知数据，推导模型和参数。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #2ecc71;">method</span>
+                        <span class="node-title">泰勒展开</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        泰勒展开是用多项式近似表达函数的一种方法。函数在某一点处展开为泰勒多项式就是泰勒展开。泰勒多项式在计算机领域是数值分析的理论基础之一。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">相似概念</span> → 傅里叶变换
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #2ecc71;">method</span>
+                        <span class="node-title">傅里叶变换</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        傅里叶变换和其逆变换是一对互逆的运算，用于对函数进行变换。傅里叶变换可以将时域的非周期连续信号转换为频域的非周期连续信号。应用包括：信号处理中滤掉特定频率成分，微分方程求解中简化运算，计算机科学中作为DFT算法的理论基础。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">后续知识</span> → 傅里叶变换与傅里叶级数的区别
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">傅里叶变换与傅里叶级数的区别</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 70.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.70
+                    </div>
+                    
+                    <div class="node-content">
+                        傅里叶级数是一个函数的近似表达，通过三角函数系进行表达。傅里叶变换是函数的函数，是一个对函数进行变换的工具，从时域转换到频域。傅里叶变换是从傅里叶级数的复数形式推导而来。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #2ecc71;">method</span>
+                        <span class="node-title">函数零点与极值点求法</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        函数零点求法：
+1. 解析解：令函数值等于0，解方程
+2. 数值方法：二分法、牛顿迭代法
+
+极值点求法：
+1. 对函数求导，令导函数等于0
+2. 判断解的两端导函数值的符号：同号为驻点，异号为极值点
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">后续知识</span> → 泰勒展开
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">无穷集合大小的判断</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 70.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.70
+                    </div>
+                    
+                    <div class="node-content">
+                        判断无穷集合大小引入&quot;势&quot;的概念。
+1. 单射：任一值域B中的值都存在定义域A中唯一的值与之对应
+2. 满射：函数值域为集合B
+3. 双射：既是单射又是满射
+
+集合的势：
+- 若集合的势小于自然数集的势(阿列夫零)，为有穷集
+- 两个集合能建立一一映射则等势
+- 实数集大于自然数集
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">部分-整体</span> → 概率与统计的区别
+                            <span class="confidence">置信度: 0.60</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #f39c12;">fact</span>
+                        <span class="node-title">欧氏距离及常见距离公式的缺点</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        欧氏距离(n维空间中两点线段长度)缺点：
+1. 受数据尺度影响，需归一化
+
+余弦相似距离缺点：
+1. 只考虑方向不考虑大小
+2. 受数据尺度影响大
+
+曼哈顿距离缺点：
+1. 不够直观
+2. 距离不是最短距离
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">互补概念</span> → 余弦相似距离与欧氏距离的区别
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                        <div class="relation-item">
+                            <span class="relation-type">相似概念</span> → 曼哈顿距离
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">余弦相似距离与欧氏距离的区别</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        余弦相似距离只考虑了数据的方向，而没考虑向量的大小，受到数据尺度的影响较大。欧氏距离体现数值上的绝对差异，而余弦距离体现方向上的相对差异。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">互补概念</span> → 欧氏距离及常见距离公式的缺点
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">曼哈顿距离</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 60.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.60
+                    </div>
+                    
+                    <div class="node-content">
+                        曼哈顿距离就是街道距离，缺点在于不够直观，并且距离不是最短距离。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">相似概念</span> → 欧氏距离及常见距离公式的缺点
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #2ecc71;">method</span>
+                        <span class="node-title">最大似然估计</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        最大似然估计的直观想法是：取到了某一样本值，那么就表明取到这一样本的概率较大，因此认为取使得这一样本值的概率最大的参数值比较合理。操作方法就是，固定样本的观察值，在参数的取值空间中挑选使得似然函数在该样本值下达到最大值的参数，作为参数的估计值。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">后续知识</span> → 梯度方向导数与梯度下降
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">梯度方向导数与梯度下降</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        导数的本质：当自变量的变化量趋于0时，函数值的变化量与自变量变化量比值的极限。\n偏导数：指的是多元函数中，函数y在某一点处沿某一坐标轴正方向的变化率。偏导数其实是方向导数的一种特殊情况。\n方向导数：某一点在某一趋近方向上的导数值，各个坐标轴的偏导数组成的向量，和方向向量的内积。\n梯度：是一个矢量，其方向上的方向导数最大，其大小正好是此最大方向导数(函数沿梯度方向有最大的变化率)。就是各个偏导...
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">前提条件</span> → 复合函数求导公式
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                        <div class="relation-item">
+                            <span class="relation-type">前提条件</span> → 导数和偏导数的区别
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #2ecc71;">method</span>
+                        <span class="node-title">复合函数求导公式</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 70.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.70
+                    </div>
+                    
+                    <div class="node-content">
+                        复合函数就是多个函数构成的函数，它的求导法则就是“链式法则”，如果某个函数由复合函数表示，则该复合函数的求导可以用构成复合函数的各个函数的导数的乘积表示。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">后续知识</span> → 梯度方向导数与梯度下降
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">导数和偏导数的区别</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 70.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.70
+                    </div>
+                    
+                    <div class="node-content">
+                        导数是针对一元函数的概念，即函数f对自变量x的导函数，又称导数、微商。而偏导数是针对多元函数来讲的，多元函数对某一个自变量的导函数称作偏导数。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">前提条件</span> → 可导、可微、连续、可积之间的关系
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                        <div class="relation-item">
+                            <span class="relation-type">后续知识</span> → 梯度方向导数与梯度下降
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">可导、可微、连续、可积之间的关系</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        一元函数：\n可微和可导互为充分必要条件，可导比连续，连续不一定可导，\n连续必可积，可积不一定连续\n二元函数：\n可微必连续，连续不一定可微\n若连续则二重极限存在，反之不成立\n连续必可积，可积不一定连续。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">后续知识</span> → 导数和偏导数的区别
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">三个中值定理的区别、联系和物理意义</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        中值定理：揭示了函数在某段区间的上的整体性质与在该区间在某一点处的导数之间的关系。\n罗尔中值定理：函数f(x)在闭区间连续，开区间可导，区间端点函数值相等，必存在一点导数值为0。\n拉格朗日中值定理：函数f(x)在闭区间连续，开区间可导，必存在一点导数值等于端点连线的斜率。揭示区间变化率与某点变化率的关系。\n柯西中值定理：函数f(x)和g(x)在闭区间连续，开区间可导，且任意一点g(x)导数值...
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">部分-整体</span> → 罗尔中值定理
+                            <span class="confidence">置信度: 0.90</span>
+                        </div>
+                        <div class="relation-item">
+                            <span class="relation-type">部分-整体</span> → 拉格朗日中值定理
+                            <span class="confidence">置信度: 0.90</span>
+                        </div>
+                        <div class="relation-item">
+                            <span class="relation-type">部分-整体</span> → 柯西中值定理
+                            <span class="confidence">置信度: 0.90</span>
+                        </div>
+                        <div class="relation-item">
+                            <span class="relation-type">部分-整体</span> → 中值定理的物理意义
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">罗尔中值定理</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        函数f(x)和g(x)在闭区间连续，开区间可导，且任意一点g(x)导数值不为0，必存在一点，f(x)导函数和g(x)导函数的比值，等于两函数区间端点函数值之差的比值。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">部分-整体</span> → 三个中值定理的区别、联系和物理意义
+                            <span class="confidence">置信度: 0.90</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">拉格朗日中值定理</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        拉格朗日中值定理是罗尔中值定理的推广，不要求区间端点函数值相等。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">部分-整体</span> → 三个中值定理的区别、联系和物理意义
+                            <span class="confidence">置信度: 0.90</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">柯西中值定理</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        柯西中值定理关系到两个函数，当g(x)=x时退化为拉格朗日中值定理。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">部分-整体</span> → 三个中值定理的区别、联系和物理意义
+                            <span class="confidence">置信度: 0.90</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">中值定理的物理意义</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        罗尔定理表明往复运动的始终必存在某一时刻速度为0。拉格朗日中值定理表明一段物体从一个地方移动到另一个地方的始终，中间必有一点加速度为0。柯西中值定理表明一段曲线运动的过程中，必有一点速度方向和位移方向相同。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">部分-整体</span> → 三个中值定理的区别、联系和物理意义
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">函数的阶</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 70.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.70
+                    </div>
+                    
+                    <div class="node-content">
+                        函数的阶相当于次数，次数越高，无穷小程度越高。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">群的定义</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        群是一个特殊的代数系统，其运算是可结合的二元运算，并且该系统中存在单位元和逆元。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">相似概念</span> → 环的定义
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                        <div class="relation-item">
+                            <span class="relation-type">相似概念</span> → 域的定义
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">环的定义</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        环是一个代数系统，集合R关于运算1构成交换群，关于运算2构成半群，并且运算2关于运算1适合分配律。其中运算1为加法，运算2为乘法。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">相似概念</span> → 群的定义
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                        <div class="relation-item">
+                            <span class="relation-type">相似概念</span> → 域的定义
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">域的定义</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        域是一个环，其乘法运算符合交换律，存在单位元，并且对于环中的任意两个非零元素执行乘法操作结果均不为0。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">相似概念</span> → 群的定义
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                        <div class="relation-item">
+                            <span class="relation-type">相似概念</span> → 环的定义
+                            <span class="confidence">置信度: 0.70</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">离散型随机变量</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        0-1分布：用于估计样本空间只有0、1两个值的独立重复实验的概率。\n二项分布：常用于样本空间只有两个值的独立重复实验的概率计算。\n泊松分布：常用于服务系统，预测某一天某时段某服务台到达人数。\n几何分布：在n次伯努利试验中，试验k次才得到第一次成功的机率。\n超几何分布：不放回抽样的概率计算。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">欧拉图与哈密顿图</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        欧拉图是包含欧拉回路的图，欧拉回路能够通过图中所有的边一次且仅一次就通过所有顶点。哈密顿图是经过所有顶点一次且仅一次。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">后续知识</span> → Hierholzier算法
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #2ecc71;">method</span>
+                        <span class="node-title">Hierholzier算法</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 70.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.70
+                    </div>
+                    
+                    <div class="node-content">
+                        欧拉图是由一个或多个回路拼接而成，只要把图中的每个回路的路径拼接起来，就可以遍历这个欧拉图。\n主要步骤：\n1.任选起始点并记录\n2.从起点出发到达任一临接点，到达的点成为新的起点，删除经过的边\n3.重复步骤2直到回到初始点，此时到达步骤1，将本次记录的点集合与上次记录的点集合拼接。若本图成为空图，到达步骤4。\n4.输出所有记录点。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">前提条件</span> → 欧拉图与哈密顿图
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #2ecc71;">method</span>
+                        <span class="node-title">Fleury算法</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 70.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.70
+                    </div>
+                    
+                    <div class="node-content">
+                        输入一个欧拉图\n任取一个顶点，假设路径Pi=v0e1v1e2。。。eivi已经行遍\n然后开始在E(G)-{e1，e2，。。。，ei}中寻找邻接边，找边的规则为：\n1.和当前顶点相关联。\n2.除非无边可选，否则不选E(G)-{e1，e2，。。。，ei}中的桥\n当已经无边可选了，算法停止，Pm=v0e1v1e2v2。。。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">后续知识</span> → 欧拉图与欧拉回路
+                            <span class="confidence">置信度: 0.90</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #2ecc71;">method</span>
+                        <span class="node-title">Fleury算法</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        Fleury算法用于寻找欧拉图中的欧拉回路。步骤如下：
+1. 输入一个欧拉图
+2. 任取一个顶点，假设路径Pi=v0e1v1e2...eivi已经行遍
+3. 在E(G)-{e1,e2,...,ei}中寻找邻接边，选择规则：
+   a. 和当前顶点相关联
+   b. 除非无边可选，否则不选E(G)-{e1,e2,...,ei}中的桥
+4. 当无边可选时，算法停止，Pm=v0e1v1e2v2...em...
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">后续知识</span> → 欧拉图与欧拉回路
+                            <span class="confidence">置信度: 0.90</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">欧拉图与欧拉回路</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        欧拉图是包含欧拉回路的图。欧拉回路是指能够通过图中所有的边一次且仅一次就通过所有顶点的回路，即&quot;能够一笔画的图&quot;。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">相似概念</span> → 哈密顿图
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                        <div class="relation-item">
+                            <span class="relation-type">前提条件</span> → 无向图定义
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">哈密顿图</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 70.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.70
+                    </div>
+                    
+                    <div class="node-content">
+                        哈密顿图至今没有一个高效地求出精确解的方法，暴力求解属于NP-Hard问题。实际应用中通常使用启发式搜索算法求近似解，如禁忌搜索算法、蚁群算法、遗传算法等。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">前提条件</span> → 无向图定义
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">欧拉函数</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 70.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.70
+                    </div>
+                    
+                    <div class="node-content">
+                        对自然数n，从0到n-1中与n互素的数的个数就是欧拉函数phi(n)。这是初等数论的重要内容，与欧拉图无关。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #2ecc71;">method</span>
+                        <span class="node-title">哈夫曼树</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        哈夫曼树又称最优二叉树，给定n个权值的集合，构造有n个叶子节点的二叉树，使得带权路径长度(权重和对应叶子节点路径长度乘积之和)最短。构造方法：
+1. 用n个权重各创建一个平凡树
+2. 循环：
+   a. 选择树根权值最小的两个树
+   b. 创建新树，左右子树为这两个树
+   c. 新树根权值为两树权值之和
+   d. 删去原来的两个树，添加新树
+   e. 只剩一个树时跳出循环
+应用：Huffm...
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">无向图定义</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 60.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.60
+                    </div>
+                    
+                    <div class="node-content">
+                        无向图是一个有序二元组，由一个非空有穷顶点集和一个由顶点集的有序积的有穷多重子集(边集)构成。无向图的边都是无序的，表示顶点间的连接关系。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">等价关系与等价类</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 70.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.70
+                    </div>
+                    
+                    <div class="node-content">
+                        如果非空集合A上的关系R同时满足自反性、对称性和传递性，则称R为A上的等价关系。等价类是集合A中所有与x等价的元素构成的集合。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">极限与连续的关系</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        极限存在不一定连续(因为连续必须在点上有定义，而极限可以没有定义)，但连续一定存在极限。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">部分-整体</span> → 连续的条件
+                            <span class="confidence">置信度: 0.90</span>
+                        </div>
+                        <div class="relation-item">
+                            <span class="relation-type">后续知识</span> → 间断点类型
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                        <div class="relation-item">
+                            <span class="relation-type">后续知识</span> → 介值定理与零点定理
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #e74c3c;">principle</span>
+                        <span class="node-title">连续的条件</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 80.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.80
+                    </div>
+                    
+                    <div class="node-content">
+                        函数在某点连续必须满足：
+1. 在该点有定义
+2. 极限存在且等于函数值
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">后续知识</span> → 间断点类型
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                        <div class="relation-item">
+                            <span class="relation-type">后续知识</span> → 介值定理与零点定理
+                            <span class="confidence">置信度: 0.80</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #3498db;">concept</span>
+                        <span class="node-title">间断点类型</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 70.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.70
+                    </div>
+                    
+                    <div class="node-content">
+                        间断点分为：
+1. 第一类间断点：
+   a. 跳跃间断点：左右极限存在但不相等
+   b. 可去间断点：在该点无定义
+2. 第二类间断点(无穷间断点)：左右极限至少有一个不存在
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="relation-item">
+                            <span class="relation-type">后续知识</span> → 寻找间断点的方法
+                            <span class="confidence">置信度: 0.90</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #2ecc71;">method</span>
+                        <span class="node-title">寻找间断点的方法</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 60.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.60
+                    </div>
+                    
+                    <div class="node-content">
+                        寻找间断点的方法：
+1. 没有定义的点
+2. 分段函数的分界点
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+                <div class="node-card">
+                    <div class="node-header">
+                        <span class="node-type-badge" style="background-color: #95a5a6;">theorem</span>
+                        <span class="node-title">介值定理与零点定理</span>
+                    </div>
+                    
+                    <div class="importance-bar">
+                        <div class="importance-fill" style="width: 90.0%;"></div>
+                    </div>
+                    <div style="font-size: 0.8em; color: #7f8c8d; margin-bottom: 10px;">
+                        重要性: 0.90
+                    </div>
+                    
+                    <div class="node-content">
+                        介值定理：若f(x)在闭区间[a,b]上连续，则对任意c∈[f(a),f(b)]，存在x∈[a,b]使f(x)=c。
+零点定理(根的存在定理)：若f(x)在[a,b]上连续且f(a)·f(b)&lt;0，则存在c∈[a,b]使f(c)=0。
+                    </div>
+                    
+                    <div class="relations-section">
+                        <strong>关系:</strong>
+                        <div class="no-relations">暂无关系</div>
+                    </div>
+                </div>
+        </div>
+    </div>
+</body>
+</html>
